@@ -1,0 +1,167 @@
+<html>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>
+// global variables
+        var canvas;
+        var canvasContent;
+        var ballX = 400;
+        var ballY = 300;
+        var ballSpeedX = 17;
+        var ballSpeedY = 10;
+        const PADDLE_HEIGHT = 100;
+        const PADDLE_WIDTH = 10;
+        const BALL_RADIUS = 10;
+        const PADDLE_SPACING = 2;
+        var paddle1X ; 
+     //   var paddle2X = 800-PADDLE_WIDTH-2; 
+        var paddle1Y = 300-PADDLE_HEIGHT/2;
+   //     var paddle2Y = 300-PADDLE_HEIGHT/2;
+        var userScore = 0;
+//        var computerScore = 0;
+ //       var paddleSpeed = 8;
+        
+// onload function
+        window.onload = function(){
+            canvas = document.getElementById('gameCanvas');
+            canvasContent = canvas.getContext('2d');
+            var framesPerSecond = 25;
+            
+//  reloading of window again and again
+            setInterval(function(){
+                drawThings();
+                speedCheck(ballX , ballY);
+                movingElements();
+                } , 1000/framesPerSecond);                                         //setInterval over
+
+// calculating mouse coordinates
+        function mousePosition(evt){
+            var rect = canvas.getBoundingClientRect();
+            var root = document.documentElement;
+            var mouseX = evt.clientX - rect.left - root.scrollLeft;
+            var mouseY = evt.clientY - rect.top - root.scrollTop;
+            return{
+                x:mouseX,
+                y:mouseY
+            };
+        }                                                                  //mousePosition over
+
+//Adding event listener function to move the paddle whenevrer the mouse moves
+       
+        canvas.addEventListener('mousemove', function(evt){
+            var mousepos = mousePosition(evt);
+            paddle1X = mousepos.x;
+            paddle1Y = mousepos.y;
+            if(paddle1Y+PADDLE_HEIGHT/2 > canvas.height)
+            {
+                paddle1Y = canvas.height - (PADDLE_HEIGHT/2) -PADDLE_SPACING;
+            }
+            else{
+                if(paddle1Y-PADDLE_HEIGHT/2 < 0)
+                {
+                    paddle1Y = (PADDLE_HEIGHT/2) + PADDLE_SPACING ;
+                }
+            }
+        });                                                                  //eventListner over
+    }                                                                        //onload over
+
+function ballReset(){
+    ballX = canvas.width/2;
+    ballY = canvas.height/2;
+    ballSpeedY=-ballSpeedY;
+}
+
+// Drawwing function
+
+        function drawThings(){
+            colorRect('black' ,0,0,canvas.width,canvas.height );
+            drawCircle('white' , ballX , ballY , BALL_RADIUS , 0 , 2*Math.PI , true);
+            colorRect('white' , PADDLE_SPACING , paddle1Y-PADDLE_HEIGHT/2 , PADDLE_WIDTH , PADDLE_HEIGHT);
+  //          colorRect('white' , paddle2X , paddle2Y , PADDLE_WIDTH , PADDLE_HEIGHT);
+            writeScore('white' , 'bold 14px Arial' , 'SCORE' , canvas.width/8 , canvas.height/8);
+     //       writeScore('white' , 'bold 14px Arial' , 'SCORE' , canvas.width-canvas.width/5 , canvas.height/8);
+            writeScore('white' , 'bold 12px Arial' , userScore , canvas.width/6.5 , canvas.height/6);
+    //        writeScore('white' , 'bold 12px Arial' , computerScore , canvas.width-canvas.width/5.8 , canvas.height/6);
+        }
+                                                                               //drawThing over
+
+//Writing Score
+
+        function writeScore(color , features , title , xcoord , ycoord){
+            canvasContent.fillStyle = color;
+            canvasContent.font = features;
+            canvasContent.fillText(title , xcoord , ycoord);
+        }                                                                      //Scoring over
+
+//Draw Circle
+
+        function drawCircle(color , centreX , centreY , radius , initang , finalang , condition){
+            canvasContent.fillStyle=color;
+            canvasContent.beginPath();
+            canvasContent.arc(centreX , centreY , radius , initang , finalang , condition);
+            canvasContent.fill();
+        }                                                                       //circle over
+
+//  Drawing Rectangle
+
+        function colorRect(color , topX , topY , width , height){
+            canvasContent.fillStyle = color;
+            canvasContent.fillRect(topX , topY , width , height);
+        }                                                                          //rectangle over
+
+// movement function
+        
+        function movingElements(){
+            ballX = ballX + ballSpeedX;
+            ballY = ballY + ballSpeedY;
+//            paddle2Y = paddle2Y + paddleSpeed;
+        }                                                                      //movingBall over
+
+//Bouncing Function
+        function speedCheck(ballX , ballY ){
+            if(ballX < PADDLE_WIDTH + PADDLE_SPACING)
+            {   
+                if(ballY > paddle1Y-PADDLE_HEIGHT/2 && ballY < paddle1Y+PADDLE_HEIGHT/2 ){
+                    ballSpeedX=-ballSpeedX;
+                    userScore ++;
+                }
+                else{
+                    ballReset();
+                    //computerScore=0;
+                    userScore=0;
+                }
+            }
+            /*if(ballX > canvas.width-PADDLE_WIDTH-PADDLE_SPACING)
+            {
+                if(ballY > paddle2Y && ballY < paddle2Y+PADDLE_HEIGHT ){
+                    computerScore ++;
+                    ballSpeedX=-ballSpeedX;
+                }
+                else{
+                    ballReset();
+                    computerScore=0;
+                    userScore=0;
+                }
+            }*/
+            if(ballX >= canvas.width-BALL_RADIUS)
+            {
+                ballSpeedX = -ballSpeedX;
+            }
+            if(ballY >= canvas.height-BALL_RADIUS)
+            {
+                ballSpeedY = -ballSpeedY;
+            }
+            if(ballY <=BALL_RADIUS )
+            {
+                ballSpeedY = -ballSpeedY;
+            }
+/*            if(paddle2Y-PADDLE_SPACING < 0)
+            {
+                paddleSpeed = -paddleSpeed;
+            }
+            if(paddle2Y + PADDLE_HEIGHT + PADDLE_SPACING > canvas.height)
+            {
+                paddleSpeed = -paddleSpeed;
+            }*/
+        }                                                                       // SpeedCheck over
+    </script>
+</html>

@@ -1,0 +1,63 @@
+<html>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script>
+        canvas = document.getElementById('canvas');
+        context = canvas.getContext('2d');
+        window.onload = function(){
+            document.addEventListener('keydown' , keyPush);
+            setInterval(game , 1000/20);
+        }
+        playerX = playerY = 10;
+        gridSize = tileCount =20;
+        foodX = foodY = 1;
+        speedX = 0 ,speedY = -1;
+        snake = [];
+        length = 5;
+        console.log(snake.length);
+        function game(){
+            console.log(snake.length);
+            playerX+= speedX;
+            playerY+= speedY;
+            if(playerX < 0)
+                playerX = tileCount - 1;
+            if(playerX > tileCount-1)
+                playerX = 0;
+            if(playerY < 0)
+                playerY = tileCount - 1;
+            if(playerY > tileCount-1)
+                playerY = 0;
+            context.fillStyle = 'black';
+            context.fillRect(0,0,canvas.width,canvas.height);
+            context.fillStyle = 'white';
+            for(var i = 0; i<snake.length; i++){
+                context.fillRect(snake[i].x*gridSize , snake[i].y*gridSize , gridSize , gridSize);
+                if(snake[i].x == playerX && snake[i].y == playerY)
+                    length = 5;
+            }    
+            snake.push({x:playerX , y:playerY});
+            console.log(snake);
+            while(snake.length>length){
+                snake.shift();
+            }
+            if(foodX == playerX && foodY == playerY){
+                length++;
+                foodX = Math.floor(Math.random()*tileCount);
+                foodY = Math.floor(Math.random()*tileCount);
+            }
+            context.fillStyle = 'red';
+            context.fillRect(foodX*gridSize , foodY*gridSize , gridSize-2 , gridSize - 2);
+        } 
+        function keyPush(evt){
+            switch (evt.keyCode){
+                case 37: speedX = -1 , speedY = 0;
+                break;
+                case 38: speedX = 0 , speedY = -1;
+                break;
+                case 39: speedX = 1 , speedY = 0;
+                break;
+                case 40: speedX = 0 , speedY = 1;
+                break;
+            }
+        }
+    </script>
+</html>
