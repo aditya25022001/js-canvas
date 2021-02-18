@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<head>
+    <title>Sorting!!</title>
+</head>
+<body>
+    <canvas id="area" width="1500" height="730"></canvas>
+    <script>
+    
+//constants
+        const INIT_DIMEN = 25;
+        const WIDTH = 5;
+
+//creating canvas element
+        var canvas = document.getElementById('area');
+        var ctx = canvas.getContext('2d');
+
+//creating array
+        var array = [];
+        for(var p=0;p<145;++p){
+            array.push(Math.floor(Math.random()*500));
+        }
+        printArray();
+        
+//printing array
+        function printArray(e){
+            colorRect('black' , 0 , 0 , canvas.width , canvas.height);
+            ctx.save();
+            for(var i=-1 ;i<array.length;i++){
+                if(i==e){
+                    console.log(e)
+                    colorRect('red ' , INIT_DIMEN + (10*i) , 1 , WIDTH , array[i]);
+                }
+                if(i<e){
+                    colorRect('green' , INIT_DIMEN + (10*i) , 1 , WIDTH , array[i]);
+                }
+                else{
+                    colorRect('white' , INIT_DIMEN + (10*i) , 1 , WIDTH , array[i]);
+                }
+            }
+            ctx.restore();
+        }
+        temp =0 ;
+        function bubbleSort(){
+            setInterval(function() {
+                printSort1();
+                },100);
+        }
+        var small , pass , temp1;
+        function selectionSort(){
+            f=-1;
+            setInterval(function(){
+                printSort2(f);
+                f++;
+                },100)
+        }
+        function printSort2(f){
+            small = array[f];
+            pass = f;
+            for(var k = f+1;k<array.length;k++){
+                if(array[k]<small){
+                    small = array[k];
+                    pass = k;
+                }
+                printArray(f);
+            }
+            printArray(f);
+            temp1 = array[f];
+            array[f] = array[pass];
+            array[pass] = temp1;
+            printArray(f);
+        }
+
+//Simple sorting
+        function printSort1(){
+            for(var e=0;e<array.length;e++){
+                if(array[e]>array[e+1]){
+                    temp = array[e];
+                    printArray();
+                    array[e]=array[e+1];
+                    printArray();
+                    array[e+1]=temp;
+                    printArray(e);
+                }
+            }
+        }
+        function print(element){
+            document.getElementById(element).innerHTML = array.toString();
+        }
+        function colorRect(color , x , y , width , height){
+            ctx.beginPath();
+            ctx.fillRect(x,y,width,height);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.closePath();
+        }
+    </script>
+    <button id="click" onclick="print('demo')">clickme</button>
+    <button id="click" onclick="bubbleSort()">Bubble Sort</button>
+    <button id="click" onclick="selectionSort()">Selection Sort</button>
+    <p id="demo"></p>
+</body>
